@@ -1,0 +1,18 @@
+{
+  "name": "mg",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "callipyge-core": "^0.8.1"
+  },
+  "scripts": {
+    "start": "node index",
+    "callipyge": "callipyge",
+    "now": "now-deploy",
+    "sass": "sass"
+  },
+  "engines": {
+    "node": ">=6"
+  }
+}
