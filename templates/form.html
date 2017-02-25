@@ -1,0 +1,11 @@
+<%= partials.head(data) %>
+<h1><a href="/">Callipyge</a> <small>Form</small></h1>
+<form method="post" action="/api/excerpt">
+<label>
+Excerpt
+<textarea name="excerpt"></textarea>
+</label>
+<input type="submit" class="button primary">
+</form>
+<pre><%- JSON.stringify(data, null, '  ') %></pre>
+<%= partials.foot(data) %>
