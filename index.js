@@ -3,6 +3,19 @@
 // npm
 const callipyge = require('callipyge-core')
 
-callipyge()
+const init = (server) => {
+  server.route({
+    path: '/form',
+    method: 'get',
+    handler: function (request, reply) {
+      reply.view('form', {})
+    }
+  })
+
+  server.register(require('./plugins/api'), { routes: { prefix: '/api' } })
+  return server
+}
+
+callipyge(init)
   .then((server) => console.log(`App running at: ${server.info.uri}`))
   .catch(console.error)
