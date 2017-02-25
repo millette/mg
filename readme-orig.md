@@ -24,6 +24,31 @@ We're done processing images!
 
 ------
 
+Pseudo-code
+
+1. fetch img from url
+2. body: get body buffer (sharp)
+3. meta: get size, width, height... (sharp)
+4. hash: sha256(body).digest('base64')
+5. get doc(hash.slice(0, 4))
+   1. if exists:
+      1. if hash+meta matches: we have the right doc
+      1. else:
+         1. get doc(hash.slice(0, 5))
+            1. if exists:
+               1. if hash+meta matches: we have the right doc
+               1. else:
+                  1. get doc(hash.slice(0, 6))
+                     1. if exists:
+                        1. if hash+meta matches: we have the right doc
+                        1. else:
+
+
+
+   1. else:
+
+------
+
 URL-a -> IMG-a
 URL-b -> IMG-b
 URL-c -> IMG-a
