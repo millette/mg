@@ -28,14 +28,17 @@ const urlsFromDb = (x) => {
   return got(url.format(u), { json: true })
 }
 
+const toBase64 = (body) => {
+  const hash = crypto.createHash('sha256')
+  hash.update(body)
+  return hash.digest('base64')
+}
+
 const makeMultipart = (img) => {
   const body = img.body
   const boundary = '666abc123666'
   const headers = { 'Content-Type': `multipart/related;boundary=${boundary}` }
-
-  const hash = crypto.createHash('sha256')
-  hash.update(body)
-  const sha256hash = hash.digest('base64')
+  const sha256hash = toBase64(body)
 
   const stuff = {
     _id: img.url,
@@ -67,6 +70,32 @@ Content-Type: image/jpeg
   return { headers, buffer: Buffer.concat(buffers) }
 }
 
+const fn1 = (z) => {
+  const mm = makeMultipart(z)
+  const it = {
+    json: true,
+    headers: mm.headers,
+    body: mm.buffer
+  }
+
+  const u = [
+    'http://localhost:5990/mesting',
+    encodeURIComponent(z.url)
+  ].join('/')
+  return got.put(u, it)
+}
+
+const fn2 = (_id, error) => {
+  if (error.code === 'ENOTFOUND' || error.statusCode === 404) {
+    const body = JSON.stringify({ _id, error, createdAt: new Date().toISOString() })
+    const headers = { 'content-type': 'application/json' }
+    return got.post('http://localhost:5990/mesting', { json: true, body, headers })
+  }
+  console.log('wah!', error)
+  y.otherError = error
+  return y
+}
+
 const addMissingUrls = (x) => {
   if (!x || !x.body || !x.body.rows || !x.body.rows.length) {
     console.log('nothing')
@@ -75,40 +104,11 @@ const addMissingUrls = (x) => {
 
   return Promise.all(x.body.rows.map((y) => {
     if (!y.error && !y.id) { return Promise.reject(new Error('Bad view result')) }
-    if (y.error || y.value.deleted) {
-      // null encoding makes z.body a buffer
-      return got(y.key, { encoding: null })
-        .then((z) => {
-          const mm = makeMultipart(z)
-          const it = {
-            json: true,
-            headers: mm.headers,
-            body: mm.buffer
-          }
-
-          const u = [
-            'http://localhost:5990/mesting',
-            encodeURIComponent(z.url)
-          ].join('/')
-          return got.put(u, it)
-        })
-        .catch((e) => {
-          if (e.code === 'ENOTFOUND' || e.statusCode === 404) {
-            const body = JSON.stringify({
-              _id: y.key,
-              createdAt: new Date().toISOString(),
-              error: e
-            })
-            const headers = { 'content-type': 'application/json' }
-            return got.post('http://localhost:5990/mesting', { json: true, body, headers })
-          }
-          console.log('wah!', e)
-          y.otherError = e
-          return y
-        })
-    }
-
-    return y
+    if (!y.error && !y.value.deleted) { return y }
+    // null encoding makes z.body a buffer
+    return got(y.key, { encoding: null })
+      .then(fn1)
+      .catch(fn2.bind(this, y.key))
   }))
 }
 
