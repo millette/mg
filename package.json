@@ -11,6 +11,7 @@
     "sharp": "^0.17.2"
   },
   "scripts": {
+    "lint": "standard",
     "start": "node index",
     "callipyge": "callipyge",
     "now": "now-deploy",
@@ -18,5 +19,8 @@
   },
   "engines": {
     "node": ">=6"
+  },
+  "devDependencies": {
+    "standard": "^8.6.0"
   }
 }
