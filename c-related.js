@@ -1,11 +1,14 @@
 'use strict'
 
+process.env.VIPS_WARNING = 0
+
 // core
 const url = require('url')
 
 // npm
 const got = require('got')
 const crypto = require('crypto')
+const sharp = require('sharp')
 
 // self
 const rewrite = require('./lib/parse')
@@ -34,6 +37,7 @@ const toBase64 = (body) => {
   return hash.digest('base64')
 }
 
+/*
 const makeMultipart = (img) => {
   const body = img.body
   const boundary = '666abc123666'
@@ -69,8 +73,19 @@ Content-Type: image/jpeg
   ]
   return { headers, buffer: Buffer.concat(buffers) }
 }
+*/
+
+/*
+New URL
+
+Fetch image from URL
+
+Do we know this hash?
+
+*/
 
 const fn1 = (z) => {
+/*
   const mm = makeMultipart(z)
   const it = {
     json: true,
@@ -82,12 +97,30 @@ const fn1 = (z) => {
     'http://localhost:5990/mesting',
     encodeURIComponent(z.url)
   ].join('/')
+
   return got.put(u, it)
+*/
+
+  return new Promise((resolve, reject) => {
+    sharp(z.body)
+      .raw()
+      .toBuffer((err, buffer, info) => {
+        console.log('err:', typeof err)
+        console.log('err:', err)
+        console.log('buffer:', typeof buffer)
+        console.log('buffer:', buffer.length)
+        console.log('buffer:', toBase64(buffer))
+        console.log('info:', typeof info)
+        console.log('info:', info)
+        if (err) { return reject(err) }
+        resolve('hi')
+      })
+  })
 }
 
-const fn2 = (_id, error) => {
+const fn2 = (y, error) => {
   if (error.code === 'ENOTFOUND' || error.statusCode === 404) {
-    const body = JSON.stringify({ _id, error, createdAt: new Date().toISOString() })
+    const body = JSON.stringify({ _id: y._id, error, createdAt: new Date().toISOString() })
     const headers = { 'content-type': 'application/json' }
     return got.post('http://localhost:5990/mesting', { json: true, body, headers })
   }
@@ -108,7 +141,7 @@ const addMissingUrls = (x) => {
     // null encoding makes z.body a buffer
     return got(y.key, { encoding: null })
       .then(fn1)
-      .catch(fn2.bind(this, y.key))
+      .catch(fn2.bind(this, y))
   }))
 }
 
