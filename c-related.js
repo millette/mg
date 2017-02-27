@@ -88,6 +88,22 @@ Do we know this hash?
 
 */
 
+const blargh = (type, buffer, info) => {
+  // if (err) { return reject(err) }
+  const hash = toBase64(buffer)
+  const sig = plainSig(hash)
+
+  const obj = { info, hash, sig }
+
+  if (type === 'orig') {
+    obj.buffer = buffer
+  }
+
+  return obj
+  // if (retObj.orig && retObj.raw) { resolve(retObj) }
+}
+
+
 const fn1 = (z) => {
 /*
   const mm = makeMultipart(z)
@@ -110,52 +126,14 @@ const fn1 = (z) => {
     sharp(z.body)
       .toBuffer((err, buffer, info) => {
         if (err) { return reject(err) }
-        const hash = toBase64(buffer)
-        const sig = plainSig(hash)
-        retObj.orig = {
-          buffer,
-          info,
-          hash,
-          sig
-        }
-
+        retObj.orig = blargh('orig', buffer, info)
         if (retObj.orig && retObj.raw) { resolve(retObj) }
-        /*
-        console.log('1err:', typeof err)
-        console.log('err:', err)
-        console.log('buffer:', typeof buffer)
-        console.log('buffer:', buffer.length)
-        console.log('rawHash:', retObj.rawHash)
-        console.log('origHash:', retObj.origHash)
-        console.log('info:', typeof info)
-        console.log('info:', info)
-        // resolve({ buffer, info })
-        */
       })
       .raw()
       .toBuffer((err, buffer, info) => {
         if (err) { return reject(err) }
-        const hash = toBase64(buffer)
-        const sig = plainSig(hash)
-        retObj.raw = {
-          info,
-          hash,
-          sig
-        }
+        retObj.raw = blargh('raw', buffer, info)
         if (retObj.orig && retObj.raw) { resolve(retObj) }
-/*
-        console.log(Date.now())
-        retObj.rawHash = toBase64(buffer)
-        console.log('2err:', typeof err)
-        console.log('err:', err)
-        console.log('buffer:', typeof buffer)
-        console.log('buffer:', buffer.length)
-        console.log('rawHash:', retObj.rawHash)
-        console.log('origHash:', retObj.origHash)
-        console.log('info:', typeof info)
-        console.log('info:', info)
-        // resolve({ buffer, info })
-*/
       })
   })
     .then((ya) => {
@@ -171,6 +149,48 @@ const fn1 = (z) => {
       console.log(ya.raw.info)
       console.log(ya.raw.hash)
       console.log(ya.raw.sig)
+
+      const origBuffer = Buffer.from(ya.orig.buffer)
+      delete ya.orig.buffer
+
+      ya.raw.format = ya.raw.info.format
+      ya.raw.width = ya.raw.info.width
+      ya.raw.height = ya.raw.info.height
+      ya.raw.channels = ya.raw.info.channels
+      ya.raw.size = ya.raw.info.size
+
+      ya.orig.format = ya.orig.info.format
+      ya.orig.width = ya.orig.info.width
+      ya.orig.height = ya.orig.info.height
+      ya.orig.channels = ya.orig.info.channels
+      ya.orig.size = ya.orig.info.size
+
+      delete ya.raw.info
+      delete ya.orig.info
+
+      const body = JSON.stringify({
+        _id: ya.raw.sig.slice(0, 1),
+        raw: ya.raw,
+        orig: ya.orig
+      })
+      const headers = { 'content-type': 'application/json' }
+      console.log('body:', body)
+      got.post('http://localhost:5990/mesting', { json: true, body, headers })
+        .then((fl) => {
+          console.log('FL:', fl.body)
+        })
+        .catch(console.error)
+
+      // At this point, we have the original format buffer
+      // and the info, hash and sig of both raw and original.
+
+      // Do we have a doc with the raw hash?
+      //  NO, we must insert it with a short ID
+      //    Start with raw.sig.slice(0, 1)
+      //    If Put conflict, try raw.sig.slice(0, 2), etc.
+      //  If so, does the raw info correspond?
+      //    If so, does the doc have the same orig hash too?
+      //      If so, does the orig info correspond?
 
       return 'yo!'
     })
