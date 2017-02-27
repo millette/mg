@@ -13,6 +13,10 @@ const sharp = require('sharp')
 // self
 const rewrite = require('./lib/parse')
 
+// skip 0, 1, l, I and O alphanums
+const rePlainSig = /[abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789]/g
+const plainSig = (str) => str.match(rePlainSig).join('')
+
 const content = `<p>Pif paf pow.
 So it goes. <img src="http://bla.example.com/ok.jpg?boo&amp;ya"></p>
 <h2>More stuff</h2>
@@ -102,20 +106,74 @@ const fn1 = (z) => {
 */
 
   return new Promise((resolve, reject) => {
+    const retObj = {}
     sharp(z.body)
-      .raw()
       .toBuffer((err, buffer, info) => {
-        console.log('err:', typeof err)
+        if (err) { return reject(err) }
+        const hash = toBase64(buffer)
+        const sig = plainSig(hash)
+        retObj.orig = {
+          buffer,
+          info,
+          hash,
+          sig
+        }
+
+        if (retObj.orig && retObj.raw) { resolve(retObj) }
+        /*
+        console.log('1err:', typeof err)
         console.log('err:', err)
         console.log('buffer:', typeof buffer)
         console.log('buffer:', buffer.length)
-        console.log('buffer:', toBase64(buffer))
+        console.log('rawHash:', retObj.rawHash)
+        console.log('origHash:', retObj.origHash)
         console.log('info:', typeof info)
         console.log('info:', info)
+        // resolve({ buffer, info })
+        */
+      })
+      .raw()
+      .toBuffer((err, buffer, info) => {
         if (err) { return reject(err) }
-        resolve('hi')
+        const hash = toBase64(buffer)
+        const sig = plainSig(hash)
+        retObj.raw = {
+          info,
+          hash,
+          sig
+        }
+        if (retObj.orig && retObj.raw) { resolve(retObj) }
+/*
+        console.log(Date.now())
+        retObj.rawHash = toBase64(buffer)
+        console.log('2err:', typeof err)
+        console.log('err:', err)
+        console.log('buffer:', typeof buffer)
+        console.log('buffer:', buffer.length)
+        console.log('rawHash:', retObj.rawHash)
+        console.log('origHash:', retObj.origHash)
+        console.log('info:', typeof info)
+        console.log('info:', info)
+        // resolve({ buffer, info })
+*/
       })
   })
+    .then((ya) => {
+      console.log(typeof ya)
+      console.log(Object.keys(ya))
+      console.log(Object.keys(ya.orig))
+      console.log(Object.keys(ya.raw))
+
+      console.log(ya.orig.info)
+      console.log(ya.orig.hash)
+      console.log(ya.orig.sig)
+
+      console.log(ya.raw.info)
+      console.log(ya.raw.hash)
+      console.log(ya.raw.sig)
+
+      return 'yo!'
+    })
 }
 
 const fn2 = (y, error) => {
