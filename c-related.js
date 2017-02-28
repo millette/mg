@@ -43,16 +43,16 @@ const toBase64 = (body) => {
   return hash.digest('base64')
 }
 
-/*
-const makeMultipart = (img) => {
+const makeMultipart2 = (img, stuff) => {
   const body = img.body
   const boundary = '666abc123666'
   const headers = { 'Content-Type': `multipart/related;boundary=${boundary}` }
-  const sha256hash = toBase64(body)
+//  const sha256hash = toBase64(body)
 
+/*
   const stuff = {
     _id: img.url,
-    sha256hash,
+//    sha256hash,
     createdAt: new Date().toISOString(),
     headers: img.headers,
     _attachments: {
@@ -61,6 +61,17 @@ const makeMultipart = (img) => {
         content_type: 'image/jpeg',
         length: body.length
       }
+    }
+  }
+*/
+  stuff.headers = img.headers
+  stuff.createdAt = new Date().toISOString()
+
+  stuff._attachments = {
+    'jpeg.jpg': {
+      follows: true,
+      content_type: 'image/jpeg',
+      length: body.length
     }
   }
 
@@ -79,7 +90,54 @@ Content-Type: image/jpeg
   ]
   return { headers, buffer: Buffer.concat(buffers) }
 }
+
+const makeMultipart = (img, stuff) => {
+  const body = img.body
+  const boundary = '666abc123666'
+  const headers = { 'Content-Type': `multipart/related;boundary=${boundary}` }
+//  const sha256hash = toBase64(body)
+
+/*
+  const stuff = {
+    _id: img.url,
+//    sha256hash,
+    createdAt: new Date().toISOString(),
+    headers: img.headers,
+    _attachments: {
+      'jpeg.jpg': {
+        follows: true,
+        content_type: 'image/jpeg',
+        length: body.length
+      }
+    }
+  }
 */
+  stuff.headers = img.headers
+  stuff.createdAt = new Date().toISOString()
+
+  stuff._attachments = {
+    'jpeg.jpg': {
+      follows: true,
+      content_type: 'image/jpeg',
+      length: body.length
+    }
+  }
+
+  const buffers = [
+    Buffer.from(`--${boundary}
+Content-Type: application/json
+
+${JSON.stringify(stuff)}
+--${boundary}
+Content-Type: image/jpeg
+
+`.replace(/\n/g, '\r\n')),
+    body,
+    Buffer.from(`
+--${boundary}--`.replace(/\n/g, '\r\n'))
+  ]
+  return { headers, buffer: Buffer.concat(buffers) }
+}
 
 const blargh = (type, buffer, info) => {
   const hash = toBase64(buffer)
@@ -90,21 +148,88 @@ const blargh = (type, buffer, info) => {
   return obj
 }
 
-const vava = (ya, n) => {
+const vava = (z, ya, n) => {
   if (!n) { n = 1 }
-  const body = JSON.stringify({
+  const bodyImp = {
     _id: ya.raw.sig.slice(0, n),
     raw: ya.raw,
     orig: ya.orig,
     file: ya.file
-  })
-  const headers = { 'content-type': 'application/json' }
+  }
+  // const body = JSON.stringify(bodyImp)
+  // const headers = { 'content-type': 'application/json' }
   // TODO: PUT with attached image
-  return got.post('http://localhost:5990/mesting', { json: true, body, headers })
+
+
+  const mm = makeMultipart2(z, bodyImp)
+  const it = {
+    json: true,
+    headers: mm.headers,
+    body: mm.buffer
+  }
+
+  const u = 'http://localhost:5990/mesting/' + bodyImp._id
+/*
+  const u = [
+    'http://localhost:5990/mesting',
+    encodeURIComponent(z.url)
+  ].join('/')
+  return got.put(u, it)
+*/
+
+  return got.put(u, it)
+  // return got.post('http://localhost:5990/mesting', { json: true, body, headers })
     .catch((e) => {
-      if (e.statusCode === 409 && n < 15) { return vava(ya, n + 1) }
+      if (e.statusCode === 409 && n < 15) { return vava(z, ya, n + 1) }
       return Promise.reject(e)
     })
+}
+
+const elProp = (z, resolve, reject) => {
+  const retObj = {}
+  sharp(z.body)
+    .toBuffer((err, buffer, info) => {
+      if (err) { return reject(err) }
+      retObj.orig = blargh('orig', buffer, info)
+      if (retObj.orig && retObj.raw) { resolve(retObj) }
+    })
+    .raw()
+    .toBuffer((err, buffer, info) => {
+      if (err) { return reject(err) }
+      retObj.raw = blargh('raw', buffer, info)
+      if (retObj.orig && retObj.raw) { resolve(retObj) }
+    })
+}
+
+const jala = (z, ya) => {
+  // const origBuffer = Buffer.from(ya.orig.buffer)
+  delete ya.orig.buffer
+
+  ya.createdAt = new Date().toISOString()
+  ya.raw.format = ya.raw.info.format
+  ya.raw.width = ya.raw.info.width
+  ya.raw.height = ya.raw.info.height
+  ya.raw.channels = ya.raw.info.channels
+  ya.raw.size = ya.raw.info.size
+
+  ya.orig.format = ya.orig.info.format
+  ya.orig.width = ya.orig.info.width
+  ya.orig.height = ya.orig.info.height
+  ya.orig.channels = ya.orig.info.channels
+  ya.orig.size = ya.orig.info.size
+
+  delete ya.raw.info
+  delete ya.orig.info
+
+  ya.file = blargh('file', z.body)
+
+  return vava(z, ya)
+    .then((a) => {
+      console.log(a.headers)
+      console.log(a.body)
+      return a
+    })
+    .catch(console.error)
 }
 
 const fn1 = (z) => {
@@ -124,23 +249,10 @@ const fn1 = (z) => {
   return got.put(u, it)
 */
 
-  return new Promise((resolve, reject) => {
-    const retObj = {}
-    sharp(z.body)
-      .toBuffer((err, buffer, info) => {
-        if (err) { return reject(err) }
-        retObj.orig = blargh('orig', buffer, info)
-        if (retObj.orig && retObj.raw) { resolve(retObj) }
-      })
-      .raw()
-      .toBuffer((err, buffer, info) => {
-        if (err) { return reject(err) }
-        retObj.raw = blargh('raw', buffer, info)
-        if (retObj.orig && retObj.raw) { resolve(retObj) }
-      })
-  })
+  return new Promise(elProp.bind(this, z))
+    .then(jala.bind(this, z))
+/*
     .then((ya) => {
-      /*
       console.log(typeof ya)
       console.log(Object.keys(ya))
       console.log(Object.keys(ya.orig))
@@ -153,7 +265,6 @@ const fn1 = (z) => {
       console.log(ya.raw.info)
       console.log(ya.raw.hash)
       console.log(ya.raw.sig)
-      */
 
       // const origBuffer = Buffer.from(ya.orig.buffer)
       delete ya.orig.buffer
@@ -175,6 +286,11 @@ const fn1 = (z) => {
 
       ya.file = blargh('file', z.body)
 
+      ya.file.format = ya.orig.format
+      ya.file.width = ya.orig.width
+      ya.file.height = ya.orig.height
+      ya.file.channels = ya.orig.channels
+
       return vava(ya)
         .then((a) => {
           console.log(a.headers)
@@ -182,7 +298,7 @@ const fn1 = (z) => {
           return a
         })
         .catch(console.error)
-/*
+
       const body = JSON.stringify({
         _id: ya.raw.sig.slice(0, 1),
         raw: ya.raw,
@@ -195,7 +311,6 @@ const fn1 = (z) => {
           console.log('FL:', fl.body)
         })
         .catch(console.error)
-*/
 
       // At this point, we have the original format buffer
       // and the info, hash and sig of both raw and original.
@@ -210,6 +325,7 @@ const fn1 = (z) => {
 
       // return 'yo!'
     })
+*/
 }
 
 const fn2 = (y, error) => {
