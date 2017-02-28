@@ -14,8 +14,10 @@ const sharp = require('sharp')
 const rewrite = require('./lib/parse')
 
 // skip 0, 1, l, I and O alphanums
-const rePlainSig = /[abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789]/g
-const plainSig = (str) => str.match(rePlainSig).join('')
+// const rePlainSig = /[abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789]/g
+// const plainSig = (str) => str.match(rePlainSig).join('')
+const rePlainSig = /[abcdefghijkmnopqrstuvwxyz0123456789]/g
+const plainSig = (str) => str.toLowerCase().match(rePlainSig).join('')
 
 const content = `<p>Pif paf pow.
 So it goes. <img src="http://bla.example.com/ok.jpg?boo&amp;ya"></p>
@@ -79,30 +81,31 @@ Content-Type: image/jpeg
 }
 */
 
-/*
-New URL
-
-Fetch image from URL
-
-Do we know this hash?
-
-*/
-
 const blargh = (type, buffer, info) => {
-  // if (err) { return reject(err) }
   const hash = toBase64(buffer)
   const sig = plainSig(hash)
-
-  const obj = { info, hash, sig }
-
-  if (type === 'orig') {
-    obj.buffer = buffer
-  }
-
+  const obj = { hash, sig }
+  if (info) { obj.info = info }
+  if (type === 'orig') { obj.buffer = buffer }
   return obj
-  // if (retObj.orig && retObj.raw) { resolve(retObj) }
 }
 
+const vava = (ya, n) => {
+  if (!n) { n = 1 }
+  const body = JSON.stringify({
+    _id: ya.raw.sig.slice(0, n),
+    raw: ya.raw,
+    orig: ya.orig,
+    file: ya.file
+  })
+  const headers = { 'content-type': 'application/json' }
+  // TODO: PUT with attached image
+  return got.post('http://localhost:5990/mesting', { json: true, body, headers })
+    .catch((e) => {
+      if (e.statusCode === 409 && n < 15) { return vava(ya, n + 1) }
+      return Promise.reject(e)
+    })
+}
 
 const fn1 = (z) => {
 /*
@@ -137,6 +140,7 @@ const fn1 = (z) => {
       })
   })
     .then((ya) => {
+      /*
       console.log(typeof ya)
       console.log(Object.keys(ya))
       console.log(Object.keys(ya.orig))
@@ -149,8 +153,9 @@ const fn1 = (z) => {
       console.log(ya.raw.info)
       console.log(ya.raw.hash)
       console.log(ya.raw.sig)
+      */
 
-      const origBuffer = Buffer.from(ya.orig.buffer)
+      // const origBuffer = Buffer.from(ya.orig.buffer)
       delete ya.orig.buffer
 
       ya.raw.format = ya.raw.info.format
@@ -168,6 +173,16 @@ const fn1 = (z) => {
       delete ya.raw.info
       delete ya.orig.info
 
+      ya.file = blargh('file', z.body)
+
+      return vava(ya)
+        .then((a) => {
+          console.log(a.headers)
+          console.log(a.body)
+          return a
+        })
+        .catch(console.error)
+/*
       const body = JSON.stringify({
         _id: ya.raw.sig.slice(0, 1),
         raw: ya.raw,
@@ -180,6 +195,7 @@ const fn1 = (z) => {
           console.log('FL:', fl.body)
         })
         .catch(console.error)
+*/
 
       // At this point, we have the original format buffer
       // and the info, hash and sig of both raw and original.
@@ -192,7 +208,7 @@ const fn1 = (z) => {
       //    If so, does the doc have the same orig hash too?
       //      If so, does the orig info correspond?
 
-      return 'yo!'
+      // return 'yo!'
     })
 }
 
