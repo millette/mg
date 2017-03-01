@@ -47,75 +47,7 @@ const makeMultipart2 = (img, stuff) => {
   const body = img.body
   const boundary = '666abc123666'
   const headers = { 'Content-Type': `multipart/related;boundary=${boundary}` }
-//  const sha256hash = toBase64(body)
-
-/*
-  const stuff = {
-    _id: img.url,
-//    sha256hash,
-    createdAt: new Date().toISOString(),
-    headers: img.headers,
-    _attachments: {
-      'jpeg.jpg': {
-        follows: true,
-        content_type: 'image/jpeg',
-        length: body.length
-      }
-    }
-  }
-*/
-
-  // stuff.headers = img.headers
   stuff.createdAt = new Date().toISOString()
-
-  stuff._attachments = {
-    'jpeg.jpg': {
-      follows: true,
-      content_type: 'image/jpeg',
-      length: body.length
-    }
-  }
-
-  const buffers = [
-    Buffer.from(`--${boundary}
-Content-Type: application/json
-
-${JSON.stringify(stuff)}
---${boundary}
-Content-Type: image/jpeg
-
-`.replace(/\n/g, '\r\n')),
-    body,
-    Buffer.from(`
---${boundary}--`.replace(/\n/g, '\r\n'))
-  ]
-  return { headers, buffer: Buffer.concat(buffers) }
-}
-
-const makeMultipart = (img, stuff) => {
-  const body = img.body
-  const boundary = '666abc123666'
-  const headers = { 'Content-Type': `multipart/related;boundary=${boundary}` }
-//  const sha256hash = toBase64(body)
-
-/*
-  const stuff = {
-    _id: img.url,
-//    sha256hash,
-    createdAt: new Date().toISOString(),
-    headers: img.headers,
-    _attachments: {
-      'jpeg.jpg': {
-        follows: true,
-        content_type: 'image/jpeg',
-        length: body.length
-      }
-    }
-  }
-*/
-  stuff.headers = img.headers
-  stuff.createdAt = new Date().toISOString()
-
   stuff._attachments = {
     'jpeg.jpg': {
       follows: true,
@@ -192,7 +124,6 @@ const elProp = (z, resolve, reject) => {
 }
 
 const jala = (z, ya) => {
-  // const origBuffer = Buffer.from(ya.orig.buffer)
   delete ya.orig.buffer
 
   ya.createdAt = new Date().toISOString()
@@ -207,19 +138,11 @@ const jala = (z, ya) => {
   ya.orig.height = ya.orig.info.height
   ya.orig.channels = ya.orig.info.channels
   ya.orig.size = ya.orig.info.size
-
   delete ya.raw.info
   delete ya.orig.info
-
   ya.file = blargh('file', z.body)
-
   return vava(z, ya)
     .then((a) => {
-      // console.log('typeof a[0]:', typeof a[0])
-      // console.log('typeof a[0]:', Object.keys(a[0]))
-      // console.log(a[1].headers)
-      // console.log(a[1].body)
-      // now is time to insert URL (see a[0])
       const doc = {
         _id: a[0].url,
         createdAt: new Date().toISOString(),
@@ -227,7 +150,6 @@ const jala = (z, ya) => {
         imageId: a[1].body.id
       }
       console.log('doc:', doc)
-      // return a
       return got.post('http://localhost:5990/mesting', {
         json: true,
         headers: {
@@ -236,108 +158,12 @@ const jala = (z, ya) => {
         body: JSON.stringify(doc)
       })
     })
-    // .catch(console.error)
 }
 
-const fn1 = (z) => {
-/*
-  const mm = makeMultipart(z)
-  const it = {
-    json: true,
-    headers: mm.headers,
-    body: mm.buffer
-  }
-
-  const u = [
-    'http://localhost:5990/mesting',
-    encodeURIComponent(z.url)
-  ].join('/')
-
-  return got.put(u, it)
-*/
-
-  return new Promise(elProp.bind(this, z))
-    .then(jala.bind(this, z))
-/*
-    .then((ya) => {
-      console.log(typeof ya)
-      console.log(Object.keys(ya))
-      console.log(Object.keys(ya.orig))
-      console.log(Object.keys(ya.raw))
-
-      console.log(ya.orig.info)
-      console.log(ya.orig.hash)
-      console.log(ya.orig.sig)
-
-      console.log(ya.raw.info)
-      console.log(ya.raw.hash)
-      console.log(ya.raw.sig)
-
-      // const origBuffer = Buffer.from(ya.orig.buffer)
-      delete ya.orig.buffer
-
-      ya.raw.format = ya.raw.info.format
-      ya.raw.width = ya.raw.info.width
-      ya.raw.height = ya.raw.info.height
-      ya.raw.channels = ya.raw.info.channels
-      ya.raw.size = ya.raw.info.size
-
-      ya.orig.format = ya.orig.info.format
-      ya.orig.width = ya.orig.info.width
-      ya.orig.height = ya.orig.info.height
-      ya.orig.channels = ya.orig.info.channels
-      ya.orig.size = ya.orig.info.size
-
-      delete ya.raw.info
-      delete ya.orig.info
-
-      ya.file = blargh('file', z.body)
-
-      ya.file.format = ya.orig.format
-      ya.file.width = ya.orig.width
-      ya.file.height = ya.orig.height
-      ya.file.channels = ya.orig.channels
-
-      return vava(ya)
-        .then((a) => {
-          console.log(a.headers)
-          console.log(a.body)
-          return a
-        })
-        .catch(console.error)
-
-      const body = JSON.stringify({
-        _id: ya.raw.sig.slice(0, 1),
-        raw: ya.raw,
-        orig: ya.orig
-      })
-      const headers = { 'content-type': 'application/json' }
-      console.log('body:', body)
-      got.post('http://localhost:5990/mesting', { json: true, body, headers })
-        .then((fl) => {
-          console.log('FL:', fl.body)
-        })
-        .catch(console.error)
-
-      // At this point, we have the original format buffer
-      // and the info, hash and sig of both raw and original.
-
-      // Do we have a doc with the raw hash?
-      //  NO, we must insert it with a short ID
-      //    Start with raw.sig.slice(0, 1)
-      //    If Put conflict, try raw.sig.slice(0, 2), etc.
-      //  If so, does the raw info correspond?
-      //    If so, does the doc have the same orig hash too?
-      //      If so, does the orig info correspond?
-
-      // return 'yo!'
-    })
-*/
-}
+const fn1 = (z) => new Promise(elProp.bind(this, z)).then(jala.bind(this, z))
 
 const fn2 = (y, error) => {
   if (error.code === 'ENOTFOUND' || error.statusCode === 404) {
-    // const body = JSON.stringify({ _id: y._id, error, createdAt: new Date().toISOString() })
     const body = JSON.stringify({ _id: y.key, error, createdAt: new Date().toISOString() })
     const headers = { 'content-type': 'application/json' }
     return got.post('http://localhost:5990/mesting', { json: true, body, headers })
@@ -356,7 +182,6 @@ const addMissingUrls = (x) => {
   return Promise.all(x.body.rows.map((y) => {
     if (!y.error && !y.id) { return Promise.reject(new Error('Bad view result')) }
     if (!y.error && !y.value.deleted) { return y }
-    // null encoding makes z.body a buffer
     return got(y.key, { encoding: null })
       .then(fn1)
       .catch(fn2.bind(this, y))
