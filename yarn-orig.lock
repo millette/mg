@@ -409,8 +409,8 @@ color-name@^1.0.0, color-name@^1.1.1:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.1.tgz#4b1415304cf50028ea81643643bd82ea05803689"
 
 color-string@^1.4.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.5.0.tgz#f9a7a0553e55b34d18a463c06f13e3384dd960ce"
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.4.0.tgz#2b47f8565fb0eb52f9f77c801992b8ca55d6e898"
   dependencies:
     color-name "^1.0.0"
     simple-swizzle "^0.2.2"
@@ -934,10 +934,10 @@ form-data@~2.1.1:
     mime-types "^2.1.12"
 
 foundation-sites@^6.3.0:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/foundation-sites/-/foundation-sites-6.3.1.tgz#23853372deb9480c13b426499eaf0c8f90cdbe1d"
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/foundation-sites/-/foundation-sites-6.3.0.tgz#19b2d6e5edced8418a4a7b4a1d65287ee1c8d512"
   dependencies:
-    jquery ">=2.2.0"
+    jquery "^2.2.0"
     what-input "^4.0.3"
 
 fs.realpath@^1.0.0:
@@ -1109,8 +1109,8 @@ hapi-error@^1.7.0:
     joi "10.x.x"
 
 hapi-password@^4.0.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/hapi-password/-/hapi-password-4.1.0.tgz#9a417ca8a32a1ab6d0f08c2611ab17f049ab5fd8"
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/hapi-password/-/hapi-password-4.0.0.tgz#23f2bc1d878867a6652676f6fbfff6f26d856cbf"
   dependencies:
     handlebars "^4.0.5"
     hapi "^16.0.2"
@@ -1201,7 +1201,7 @@ hosted-git-info@^2.1.4:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.2.0.tgz#7a0d097863d886c0fabbdcd37bf1758d8becf8a5"
 
-htmlparser2@^3.9.2:
+htmlparser2@^3.9.0, htmlparser2@^3.9.2:
   version "3.9.2"
   resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-3.9.2.tgz#1bdf87acca0f3f9e53fa4fcceb0f4b4cbb00b338"
   dependencies:
@@ -1283,8 +1283,8 @@ inquirer@^0.12.0:
     through "^2.3.6"
 
 inquirer@^3.0.4:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-3.0.5.tgz#172cabc8eacbfb91d595f5d7c354b446b8141f65"
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-3.0.4.tgz#ed9588020edbcc40fc94c50761ad00dcf8598ff5"
   dependencies:
     ansi-escapes "^1.1.0"
     chalk "^1.0.0"
@@ -1359,8 +1359,8 @@ is-fullwidth-code-point@^2.0.0:
   resolved "https://registry.yarnpkg.com/is-fullwidth-code-point/-/is-fullwidth-code-point-2.0.0.tgz#a3b30a5c4f199183167aaab93beefae3ddfb654f"
 
 is-my-json-valid@^2.10.0, is-my-json-valid@^2.12.4:
-  version "2.16.0"
-  resolved "https://registry.yarnpkg.com/is-my-json-valid/-/is-my-json-valid-2.16.0.tgz#f079dd9bfdae65ee2038aae8acbc86ab109e3693"
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/is-my-json-valid/-/is-my-json-valid-2.15.0.tgz#936edda3ca3c211fd98f3b2d3e08da43f7b2915b"
   dependencies:
     generate-function "^2.0.0"
     generate-object-property "^1.1.0"
@@ -1480,9 +1480,9 @@ joi@9.X.X:
     moment "2.x.x"
     topo "2.x.x"
 
-jquery@>=2.2.0:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.1.1.tgz#347c1c21c7e004115e0a4da32cece041fad3c8a3"
+jquery@^2.2.0:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.4.tgz#2c89d6889b5eac522a7eea32c14521559c6cbf02"
 
 js-tokens@^3.0.0:
   version "3.0.1"
@@ -2078,6 +2078,10 @@ redent@^1.0.0:
     indent-string "^2.1.0"
     strip-indent "^1.0.1"
 
+regexp-quote@0.0.0:
+  version "0.0.0"
+  resolved "https://registry.yarnpkg.com/regexp-quote/-/regexp-quote-0.0.0.tgz#1e0f4650c862dcbfed54fd42b148e9bb1721fcf2"
+
 registry-auth-token@^3.0.1:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/registry-auth-token/-/registry-auth-token-3.1.0.tgz#997c08256e0c7999837b90e944db39d8a790276b"
@@ -2171,8 +2175,8 @@ right-align@^0.1.1:
     align-text "^0.1.1"
 
 rimraf@2, rimraf@^2.2.8:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.1.tgz#c2338ec643df7a1b7fe5c54fa86f57428a55f33d"
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.0.tgz#89b8a0fe432b9ff9ec9a925a00b6cdb3a91bbada"
   dependencies:
     glob "^7.0.5"
 
@@ -2203,6 +2207,14 @@ rx@^4.1.0:
 safe-buffer@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.0.1.tgz#d263ca54696cd8a306b5ca6551e92de57918fbe7"
+
+sanitize-html@^1.14.1:
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/sanitize-html/-/sanitize-html-1.14.1.tgz#730ffa2249bdf18333effe45b286173c9c5ad0b8"
+  dependencies:
+    htmlparser2 "^3.9.0"
+    regexp-quote "0.0.0"
+    xtend "^4.0.0"
 
 sass-graph@^2.1.1:
   version "2.1.2"
@@ -2507,8 +2519,8 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
 
 uglify-js@^2.6:
-  version "2.8.4"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.4.tgz#5aeb6fd6f1f0a672dea63795016590502c290513"
+  version "2.7.5"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.7.5.tgz#4612c0c7baaee2ba7c487de4904ae122079f2ca8"
   dependencies:
     async "~0.2.6"
     source-map "~0.5.1"
@@ -2595,8 +2607,8 @@ vision@^4.1.1:
     joi "10.x.x"
 
 what-input@^4.0.3:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/what-input/-/what-input-4.1.1.tgz#475ef53c4503bd13ac145e38ed7105a67eb69d79"
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/what-input/-/what-input-4.0.6.tgz#bbe3cd1e1eb5ee16e441c08af7294740f94614ec"
 
 which-module@^1.0.0:
   version "1.0.0"

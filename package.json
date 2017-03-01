@@ -7,7 +7,6 @@
     "callipyge-core": "^0.9.0",
     "got": "^6.7.1",
     "htmlparser2": "^3.9.2",
-    "sanitize-html": "^1.14.1",
     "sharp": "^0.17.2"
   },
   "scripts": {
