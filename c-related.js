@@ -64,7 +64,8 @@ const makeMultipart2 = (img, stuff) => {
     }
   }
 */
-  stuff.headers = img.headers
+
+  // stuff.headers = img.headers
   stuff.createdAt = new Date().toISOString()
 
   stuff._attachments = {
@@ -156,10 +157,6 @@ const vava = (z, ya, n) => {
     orig: ya.orig,
     file: ya.file
   }
-  // const body = JSON.stringify(bodyImp)
-  // const headers = { 'content-type': 'application/json' }
-  // TODO: PUT with attached image
-
 
   const mm = makeMultipart2(z, bodyImp)
   const it = {
@@ -168,17 +165,10 @@ const vava = (z, ya, n) => {
     body: mm.buffer
   }
 
-  const u = 'http://localhost:5990/mesting/' + bodyImp._id
-/*
-  const u = [
-    'http://localhost:5990/mesting',
-    encodeURIComponent(z.url)
-  ].join('/')
-  return got.put(u, it)
-*/
-
-  return got.put(u, it)
-  // return got.post('http://localhost:5990/mesting', { json: true, body, headers })
+  return Promise.all([
+    z,
+    got.put('http://localhost:5990/mesting/' + bodyImp._id, it)
+  ])
     .catch((e) => {
       if (e.statusCode === 409 && n < 15) { return vava(z, ya, n + 1) }
       return Promise.reject(e)
@@ -225,11 +215,28 @@ const jala = (z, ya) => {
 
   return vava(z, ya)
     .then((a) => {
-      console.log(a.headers)
-      console.log(a.body)
-      return a
+      // console.log('typeof a[0]:', typeof a[0])
+      // console.log('typeof a[0]:', Object.keys(a[0]))
+      // console.log(a[1].headers)
+      // console.log(a[1].body)
+      // now is time to insert URL (see a[0])
+      const doc = {
+        _id: a[0].url,
+        createdAt: new Date().toISOString(),
+        headers: a[0].headers,
+        imageId: a[1].body.id
+      }
+      console.log('doc:', doc)
+      // return a
+      return got.post('http://localhost:5990/mesting', {
+        json: true,
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify(doc)
+      })
     })
-    .catch(console.error)
+    // .catch(console.error)
 }
 
 const fn1 = (z) => {
@@ -330,7 +337,8 @@ const fn1 = (z) => {
 
 const fn2 = (y, error) => {
   if (error.code === 'ENOTFOUND' || error.statusCode === 404) {
-    const body = JSON.stringify({ _id: y._id, error, createdAt: new Date().toISOString() })
+    // const body = JSON.stringify({ _id: y._id, error, createdAt: new Date().toISOString() })
+    const body = JSON.stringify({ _id: y.key, error, createdAt: new Date().toISOString() })
     const headers = { 'content-type': 'application/json' }
     return got.post('http://localhost:5990/mesting', { json: true, body, headers })
   }
@@ -361,7 +369,8 @@ rewrite.extractImages(content)
   .then((x) => {
     // console.log(Object.keys(x[0]))
     // console.log(Object.keys(x[1]))
-    console.log('ok dear')
+    // console.log('ok dear', typeof x, Object.keys(x[0]), Object.keys(x[1]))
+    console.log('ok dear', x)
   })
   .catch((e) => {
     console.error('eur!', e)
