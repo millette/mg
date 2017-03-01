@@ -21,6 +21,6 @@
     "node": ">=6"
   },
   "devDependencies": {
-    "standard": "^8.6.0"
+    "standard": "^9.0.0"
   }
 }
