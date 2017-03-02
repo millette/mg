@@ -1,16 +1,20 @@
 'use strict'
 
-// npm
-// const _ = require('lodash')
+// self
+const postUrl = require('../../lib/posturl')
 
-const re = /(<img[^]*src=[^]+?>)/g
+// const re = /(<img[^]*src=[^]+?>)/g
 
 const postHandler = function (request, reply) {
   const content = typeof request.payload === 'string'
     ? request.payload
     : request.payload.excerpt
 
-  reply(content.match(re))
+  postUrl.newImage(content)
+    .then((x) => {
+      reply(x.out)
+      // reply(content.match(re))
+    })
 }
 
 exports.register = function (server, options, next) {
