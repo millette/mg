@@ -13,6 +13,7 @@ const init = (server) => {
   })
 
   server.register(require('./plugins/api'), { routes: { prefix: '/api' } })
+  server.register(require('./plugins/img'))
   return server
 }
 
