@@ -1,4 +1,7 @@
 <%= partials.head(data) %>
 <h1><a href="/">Callipyge</a> <small>mg</small></h1>
+<div>
+<%= data.out %>
+</div>
 <pre><%- JSON.stringify(data, null, '  ') %></pre>
 <%= partials.foot(data) %>
