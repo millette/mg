@@ -3,17 +3,16 @@
 // self
 const postUrl = require('../../lib/posturl')
 
-// const re = /(<img[^]*src=[^]+?>)/g
-
 const postHandler = function (request, reply) {
+  console.log(typeof request.payload, request.payload)
   const content = typeof request.payload === 'string'
     ? request.payload
     : request.payload.excerpt
 
   postUrl.newImage(content)
     .then((x) => {
+      if (typeof request.payload === 'string') { return reply(x) }
       reply.view('mg', x)
-      // reply(content.match(re))
     })
 }
 
@@ -21,6 +20,12 @@ exports.register = function (server, options, next) {
   server.route({
     path: '/excerpt',
     method: 'post',
+    config: {
+      auth: {
+        strategy: 'password',
+        mode: 'required'
+      }
+    },
     handler: postHandler
   })
   next()
