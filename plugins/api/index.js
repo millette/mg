@@ -12,7 +12,7 @@ const postHandler = function (request, reply) {
 
   postUrl.newImage(content)
     .then((x) => {
-      reply(x.out)
+      reply.view('mg', x)
       // reply(content.match(re))
     })
 }
