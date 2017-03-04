@@ -1,6 +1,7 @@
 'use strict'
 
 // self
+const pkg = require('../../package.json')
 const postUrl = require('../../lib/posturl')
 
 const postHandler = function (request, reply) {
@@ -33,5 +34,5 @@ exports.register = function (server, options, next) {
 
 exports.register.attributes = {
   name: 'api',
-  version: '0.0.0'
+  version: pkg.version
 }
