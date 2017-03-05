@@ -29,14 +29,11 @@ const image404 = function (request, reply) {
 
 const imageRoute = function (request, reply) {
   const ext = path.extname(request.path)
-  // FIXME DB
   const u = dbUrl(true)
   const auth = u.auth
   delete u.auth
   u.pathname = [u.pathname, request.params.shortid, `jpeg${ext}`].join('/')
   const u2 = url.format(u)
-  // const u = `http://localhost:5990/mesting/${request.params.shortid}/jpeg${ext}`
-  console.log('u2:', u2)
   got(u2, { auth, encoding: null })
     .then((x) => {
       reply(x.body).type(x.headers['content-type']).etag(x.headers.etag.slice(1, -1))
