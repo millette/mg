@@ -5,7 +5,6 @@ const pkg = require('../../package.json')
 const postUrl = require('../../lib/posturl')
 
 const postHandler = function (request, reply) {
-  // console.log(typeof request.payload, request.payload)
   const content = typeof request.payload === 'string'
     ? request.payload
     : request.payload.excerpt
