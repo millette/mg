@@ -286,9 +286,9 @@ callipyge-cloudant@^0.6.0:
     joi "^10.2.2"
     wreck "^10.0.0"
 
-callipyge-core@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/callipyge-core/-/callipyge-core-0.10.0.tgz#dfd8cb20bd051f374f9e552c13419b39abdadc9e"
+callipyge-core@^0.10.1:
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/callipyge-core/-/callipyge-core-0.10.1.tgz#cb00f06cb87f93f5446105f6157bea641caede38"
   dependencies:
     callipyge-cloudant "^0.6.0"
     color-hash "^1.0.3"
@@ -306,7 +306,7 @@ callipyge-core@^0.10.0:
     inquirer "^3.0.6"
     joi "^10.2.2"
     lodash-vision "^0.2.0"
-    lout "^9.2.0"
+    lout "^10.0.0"
     node-sass "^4.5.0"
     update-notifier "^2.1.0"
     vision "^4.1.1"
@@ -597,15 +597,9 @@ debug@2.2.0:
   dependencies:
     ms "0.7.1"
 
-debug@2.3.3:
+debug@2.3.3, debug@^2.1.1:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.3.3.tgz#40c453e67e6e13c901ddec317af8986cda9eff8c"
-  dependencies:
-    ms "0.7.2"
-
-debug@^2.1.1:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.1.tgz#79855090ba2c4e3115cc7d8769491d58f0491351"
   dependencies:
     ms "0.7.2"
 
@@ -855,9 +849,9 @@ eslint-config-standard-jsx@3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/eslint-config-standard-jsx/-/eslint-config-standard-jsx-3.3.0.tgz#cab0801a15a360bf63facb97ab22fbdd88d8a5e0"
 
-eslint-config-standard@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-standard/-/eslint-config-standard-7.0.0.tgz#4f161bc65695e4bc61331c55b9eeaca458cd99c6"
+eslint-config-standard@7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/eslint-config-standard/-/eslint-config-standard-7.0.1.tgz#6cec96084de9ac862c33ccb953d13a7c59872342"
 
 eslint-plugin-promise@~3.4.0:
   version "3.4.2"
@@ -1773,11 +1767,11 @@ loud-rejection@^1.0.0:
     currently-unhandled "^0.4.1"
     signal-exit "^3.0.0"
 
-lout@^9.2.0:
-  version "9.2.0"
-  resolved "https://registry.yarnpkg.com/lout/-/lout-9.2.0.tgz#fb0e5f69c09752eef64fc35fccf8809fa42e1eef"
+lout@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/lout/-/lout-10.0.0.tgz#2d87a4591d1cb1f07373b3e8a5200bc1c965c2d5"
   dependencies:
-    boom "3.x.x"
+    boom "4.x.x"
     handlebars "4.x.x"
     hoek "4.x.x"
 
@@ -1970,13 +1964,9 @@ oauth-sign@~0.8.1:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
 
-object-assign@4.1.0:
+object-assign@4.1.0, object-assign@^4.0.1, object-assign@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.0.tgz#7a3b3d0e98063d43f4c03f2e8ae6cd51a86883a0"
-
-object-assign@^4.0.1, object-assign@^4.1.0:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
 object-component@0.0.3:
   version "0.0.3"
@@ -2557,12 +2547,12 @@ standard-engine@~5.4.0:
     minimist "^1.1.0"
     pkg-conf "^2.0.0"
 
-standard@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/standard/-/standard-9.0.0.tgz#58b2acad4dc33823a7477568033c973fc5b6a995"
+standard@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/standard/-/standard-9.0.1.tgz#c053e9009bb1a8b4c6b03bf12df4784185bb5899"
   dependencies:
     eslint "~3.15.0"
-    eslint-config-standard "7.0.0"
+    eslint-config-standard "7.0.1"
     eslint-config-standard-jsx "3.3.0"
     eslint-plugin-promise "~3.4.0"
     eslint-plugin-react "~6.9.0"
